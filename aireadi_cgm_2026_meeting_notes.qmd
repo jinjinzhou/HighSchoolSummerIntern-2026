@@ -78,7 +78,7 @@ Useful AI-READI modalities for this internship:
 | Week 0 | Meeting Zero: introductions, project overview, expectations, weekly meeting time, and TA roles | Confirm schedule and bridge-period assignments |
 | Between Week 0 and Week 1 | Setup and background preparation | Software setup, AI-READI/CGM background memo, paper summary, and toy-data or first cohort plot |
 | Week 1 | Cohort assembly and data availability | `01_cohort_assembly.qmd`; cohort table; modality availability plots |
-| Week 2 | CGM processing and individual glucose patterns | `02_cgm_qc_features.qmd`; participant-level CGM features; example CGM plots |
+| Week 2 | CGM processing and individual glucose patterns | `02_cgm_qc_features.qmd`; participant-level and participant-day CGM features; example CGM and AGP plots |
 | Week 3 | Sleep and activity data processing | `03_sleep_activity_processing.qmd`; person-night sleep table; daily activity table |
 | Week 4 | Sleep and next-day glucose patterns | `04_sleep_next_day_glucose.qmd`; sleep-CGM aligned person-night analysis |
 | Week 5 | Clinical phenotypes and multimodal features | `05_clinical_phenotypes.qmd`; clinical feature table; phenotype comparisons |
@@ -185,12 +185,12 @@ Suggested folder purposes:
 
 - `data/`: raw or processed data files, if provided
 - `code/`: R scripts or reusable code
-- `notebooks/`: exploratory analysis files
+- `notebooks/`: exploratory analysis files, e.g., your `qmd` file
 - `figures/`: saved plots and images
 - `tables/`: saved tables or summary outputs
 - `slides/`: presentation materials
 
-Do not upload private, sensitive, or restricted data to GitHub.
+**Do not upload private, sensitive, or restricted data to GitHub**.
 
 #### Create `00_background_report.qmd`
 
@@ -365,12 +365,14 @@ Eric, Tyler, Brain, Shubho, Joleen, Bowen, Hua, Jin
 
 1. Welcome back, house keeping items, new member
 
+   + Git/GitHub
+
 2. Rubric for presentation:
 
 - Start with an overall summary for what you did during the last week (5-10min)
 - Focus on one piece that you would like to expand and talk about (10-15min) 
 - Challenging you faced or questions you would like the group to address (5-10min)
-- Total time 30min 
+- Total time 20-30min 
 
 3. Each student in the order of
 
@@ -379,7 +381,7 @@ Eric, Tyler, Brain, Shubho, Joleen, Bowen, Hua, Jin
 - Shubho Banerjee
 - Brain Li
 
-to report bridge-period progress on:
+  to report bridge-period progress on:
 
 - R, RStudio, Quarto, and package setup;
 - AI-READI background;
@@ -388,15 +390,17 @@ to report bridge-period progress on:
 - one toy-data plot or first cohort plot;
 - questions about diabetes, CGM, AI-READI, or reproducible workflow.
 
-4. Mentor discussion:
+4. Key points from meeting:
+- Use meeting note file, i.e., `qmd` as the template to work on yours
+- Start early and commit frequently 
+- Code style: 
+   + [Tidy style guide](https://style.tidyverse.org/)
+   + [Google R style guide](https://web.stanford.edu/class/cs109l/unrestricted/resources/google-style.html)
+- When producing a graph, always put together a brief description about what 
+  you learned from it.
+- Always ask questions  
 
-- What is a participant-level table?
-- Why do we need one row per participant for many analyses?
-- What is missingness?
-- Why do data availability plots matter before modeling?
-- What can the AI-READI mini dataset support, and what should not be overinterpreted?
-
-Technical topic:
+5. Week 1 topics: 
 
 - Reading tabular files.
 - Filtering rows.
@@ -405,88 +409,254 @@ Technical topic:
 - Summarizing groups.
 - Creating a clean project workflow in Quarto.
 
-## In-Meeting Exercise
+
+Here is a copy-ready replacement for your current Week 1 TODO section:
+
+
+## TODOs (due during week 2 meeting)
+
+### Main Goal
+
+By the Week 2 meeting, each student should be able to explain which AI-READI participants are usable for the next stages of analysis, what data are available or missing, and what first patterns are visible from the cohort and manifest files.
+
+Use the AI-READI mini dataset first to develop and debug your code. If you have access to the full dataset, rerun the same analysis on the full dataset and compare the results. The mini dataset is for learning and testing; the full dataset is for scientific interpretation.
+
+### Required Readings
+
+- Read [R for Data Science: Data transformation](https://r4ds.hadley.nz/data-transform).
+- Read [R for Data Science: Joins](https://r4ds.hadley.nz/joins).
+- Skim the AI-READI dataset documentation, especially the parts describing `participants.tsv`, modality manifests, CGM, and wearable data.
+
+### Main Deliverable
+
+Create and render:
+
+- `01_cohort_assembly.qmd`
+- `01_cohort_assembly.html`
+
+Your notebook should run on the mini dataset. If you have access to the full dataset, it should also be able to run on the full dataset after changing only the data path.
+
+Do not upload private, sensitive, or restricted raw data to GitHub.
+
+### Analysis Tasks
 
 Build the first AI-READI cohort table with:
 
-- participant ID;
+- participant ID or person ID;
 - age;
 - study group;
 - clinical site;
-- recommended split;
+- recommended split, if available;
 - CGM availability;
 - wearable availability;
 - clinical data availability;
 - average CGM glucose from the CGM manifest;
-- average daily steps from the wearable manifest if available.
+- average daily steps from the wearable manifest, if available.
 
-## TODOs
+Clearly state which dataset version you used and which ID variable you used for joins, such as `participant_id` or `person_id`.
 
-- Read [R for Data Science: Data transformation](https://r4ds.hadley.nz/data-transform).
-- Read [R for Data Science: Joins](https://r4ds.hadley.nz/joins).
-- Create `01_cohort_assembly.qmd`.
-- Produce:
-  - Table 1: participant counts by study group.
-  - Figure 1: modality availability heatmap.
-  - Figure 2: average CGM glucose by study group.
-  - Figure 3: average daily steps by study group.
-- Write a short paragraph:
+### Required Tables and Figures
 
-> Why should we inspect missing data before asking a scientific question?
+Produce the following for the mini dataset. If you have access to the full dataset, repeat the same tables and figures for the full dataset.
 
-# Week 2: CGM Processing and Individual Glucose Patterns
+- Table 1: participant counts by study group.
+- Table 2: participant counts by study group and clinical site.
+- Table 3: data availability summary:
+  - number with CGM data;
+  - number with wearable data;
+  - number with clinical data;
+  - number with CGM plus wearable data;
+  - number with CGM plus wearable plus clinical data.
+- Figure 1: modality availability heatmap.
+- Figure 2: average CGM glucose by study group.
+- Figure 3: average daily steps by study group, if available from the wearable manifest.
+
+For each table or figure, write 2-3 sentences explaining what it shows.
+
+### Mini Versus Full Dataset Comparison
+
+If you have access to the full dataset, add a short comparison section:
+
+- How many participants are in the mini dataset versus the full dataset?
+- Are the study groups represented similarly?
+- Are the clinical sites represented similarly?
+- Is modality availability similar or different?
+- Did the same code run on both datasets after changing only the data path?
+
+If you only have access to the mini dataset, write one short paragraph explaining what you would want to check in the full dataset later.
+
+### Join and Data Quality Checks
+
+Include a short quality-control section showing:
+
+- number of rows before and after each join;
+- number of unique participants before and after each join;
+- whether any participant IDs are duplicated;
+- whether any participants are lost unexpectedly;
+- which variables have the most missing values.
+
+### Analysis Cohort Decisions
+
+Define at least two analysis cohorts:
+
+- CGM-only cohort: participants with usable CGM data.
+- CGM plus wearable cohort: participants with both CGM and wearable data.
+
+For each cohort, write a short explanation of:
+
+- how many participants are included;
+- which study groups are represented;
+- what future scientific questions this cohort can support;
+- what questions this cohort cannot support because of missing data.
+
+### Interpretation Paragraph
+
+Write one short paragraph answering:
+
+> What does the missing-data pattern tell us about which scientific questions are possible in this dataset?
+
+If you compared mini and full datasets, also answer:
+
+> Why is it useful to develop code on the mini dataset but check scientific conclusions on the full dataset?
+
+### Presentation for Week 2 Meeting
+
+Prepare a 15-20 min presentation with Q&A:
+
+- State your question and whether you used the mini dataset, full dataset, or both.
+- Explain one thing you learned about the participants or available data.
+- Show one R skill you learned and where you used it in your code.
+- Interpret one table or figure, then share one challenge or next step.
+
+
+# Week 2 (7/14/26): CGM Processing and Individual Glucose Patterns
 
 ## Agenda
 
-Students report progress on:
 
-- cohort table;
-- modality availability;
-- first plots;
-- questions about file paths and joins.
+### Week 1 Check-In 
 
-Scientific discussion:
+Students: Tyler Tong, Shubho Banerjee, Brain Li, and Eric Xie
 
-- What does CGM measure?
-- What is time in range?
-- What is time above 180 mg/dL?
-- What is coefficient of variation?
-- Why can two people with the same HbA1c have different CGM curves?
+Each student has 15-20 minutes:
 
-Technical topic:
+- State your question and whether you used the mini dataset, full dataset, or both.
+- Explain one thing you learned about the participants or available data.
+- Show one R skill you learned and where you used it in your code.
+- Interpret one table or figure, then share one challenge or next step.
 
-- Reading one participant's Dexcom G6 JSON file.
-- Handling timestamps.
-- Handling out-of-range glucose values.
-- Making individual CGM plots.
-- Making an ambulatory glucose profile (AGP).
 
-## In-Meeting Exercise
+### Break (5 minutes)
 
-For three selected participants:
+### R for Data Science: Core Skills 
 
-- plot the raw CGM time series;
-- plot an AGP-style 24-hour glucose profile;
-- compute mean glucose, standard deviation, coefficient of variation, time in range, time above 180, and time below 70.
+We will explain the R core skill sets and how each week's meeting map to them
 
-## TODOs
+### Student-Guided CGM Code Walkthrough 
 
-- Read [R for Data Science: Dates and times](https://r4ds.hadley.nz/datetimes).
-- Read the AI-READI CGM documentation.
-- Create `02_cgm_qc_features.qmd`.
-- Build a participant-level CGM feature table.
-- Required CGM features:
-  - number of readings;
-  - number of valid CGM days;
-  - mean glucose;
-  - glucose standard deviation;
-  - coefficient of variation;
-  - time in range 70-180;
-  - time above 180;
-  - time above 250;
-  - time below 70;
-  - time below 54.
-- Create a figure showing three individuals with similar HbA1c but different CGM patterns, if examples can be found.
+Before each code block, ask students:
+
+1. What is the input?
+2. What output do we want?
+3. How should we check the result?
+
+Then write and run the code together:
+
+- introduce the CGM workflow and expected outputs (3 minutes);
+- read and inspect one Dexcom G6 JSON file (5 minutes);
+- clean timestamps, glucose values, and units (5 minutes);
+- check data quality and identify valid days (5 minutes);
+- create summary measures (4 minutes);
+- make a glucose trace or [ambulatory glucose profile (AGP)](https://www.novomedlink.com/diabetes/hcp-education/clinical/time-in-range/clinical-use/understand-ambulatory-glucose-profile.html) (3 minutes).
+
+### Week 2 Work Plan 
+
+### Questions 
+
+
+## Goal
+
+Use the Week 1 cohort to create clean CGM data, summary tables, and plots. These results will be used for the sleep and activity analysis in Week 3.
+
+## Tasks (due by the Week 3 meeting)
+
+Complete the steps below in order.
+
+### Step 1: Read
+
+- [R for Data Science: Dates and times](https://r4ds.hadley.nz/datetimes)
+- AI-READI CGM documentation: Dexcom G6 files, timestamps, and glucose units
+- A short guide to time in range, time above range, time below range, and glucose variability
+
+### Step 2: Create the Notebook
+
+Create and render:
+
+- `02_cgm_qc_features.qmd`
+- `02_cgm_qc_features.html`
+
+Start with the Week 1 CGM cohort. Use all available participants or clearly describe the smaller group you used.
+
+### Step 3: Clean the CGM Data
+
+Keep these columns:
+
+- participant ID;
+- timestamp, date, and time of day;
+- glucose value and unit.
+
+Then:
+
+1. Check for missing timestamps and glucose values.
+2. Check for duplicate readings and unusual glucose values.
+3. Mark a day as valid when it has at least 202 of 288 expected readings (70% of a complete 5-minute CGM day).
+4. Create a clean reading-level CGM table.
+
+### Step 4: Create Summary Tables
+
+Create one row per participant with:
+
+- number of readings and valid days;
+- mean, median, and standard deviation (SD) of glucose;
+- coefficient of variation (CV = SD / mean × 100%);
+- percent of time at 70--180, >180, >250, <70, and <54 mg/dL.
+
+Create one row per valid participant-day with:
+
+- number of readings;
+- mean glucose and SD;
+- percent of time at 70--180, >180, and <70 mg/dL;
+- daytime and nighttime summaries, only if the timestamps are reliable.
+
+### Step 5: Make Tables and Figures
+
+- **Table 1:** CGM quality-control summary by participant
+- **Table 2:** participant-level CGM features
+- **Figure 1:** full CGM trace for one participant
+- **Figure 2:** one-day traces for two or three participants
+- **Figure 3:** AGP-style plot for one participant or a small group
+- **Optional Figure 4:** people with similar HbA1c but different CGM patterns
+
+For each figure, write 2--3 sentences: What does it show? What does it **not** prove?
+
+### Step 6: Prepare for Week 3
+
+End the notebook with short answers to these questions:
+
+- Who has both usable CGM and wearable data?
+- Which timestamp should be matched to sleep data?
+- What CGM dates are usable, and where are the gaps?
+- Is the participant-day table ready to join with sleep data?
+
+### Week 3 Presentation
+
+Prepare a ~20-minute update with:
+
+1. one quality-control result;
+2. one CGM plot;
+3. one feature table or summary;
+4. one problem you encountered and how you handled it;
+5. one result that will help with the Week 3 sleep analysis.
 
 # Week 3: Sleep and Activity Data Processing
 
@@ -497,6 +667,7 @@ Students report progress on:
 - CGM quality control;
 - individual CGM plots;
 - participant-level CGM feature table;
+- participant-day CGM summaries for sleep alignment;
 - examples of similar HbA1c but different CGM patterns.
 
 Scientific discussion:
