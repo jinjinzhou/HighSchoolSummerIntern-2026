@@ -582,8 +582,10 @@ Complete the steps below in order.
 ### Step 1: Read
 
 - [R for Data Science: Dates and times](https://r4ds.hadley.nz/datetimes)
-- AI-READI CGM documentation: Dexcom G6 files, timestamps, and glucose units
-- A short guide to time in range, time above range, time below range, and glucose variability
+- [AI-READI v3 CGM documentation](https://docs.aireadi.org/docs/3/dataset/wearable-glucose-monitor/): Dexcom G6 files, timestamps, time zones, and glucose units
+- [International consensus on CGM targets](https://pmc.ncbi.nlm.nih.gov/articles/PMC6973648/): read Table 2 and review the AGP example in Figure 2 
+
+The consensus paper recommends 14 days with at least 70% active CGM data for clinical interpretation. AI-READI participants were asked to wear the sensor for approximately 10 days. For this assignment, use all available valid days, up to 10 days, to create an educational AGP-style figure. Do not describe it as a complete 14-day clinical AGP.
 
 ### Step 2: Create the Notebook
 
@@ -592,57 +594,116 @@ Create and render:
 - `02_cgm_qc_features.qmd`
 - `02_cgm_qc_features.html`
 
-Start with the Week 1 CGM cohort. Use all available participants or clearly describe the smaller group you used.
+Start with the Week 1 CGM cohort. Develop the code with one participant, test it with five participants, and then run it for all available CGM participants if feasible. If you use a smaller final group, report the number of participants, their IDs, the selection rule, and the reason.
 
 ### Step 3: Clean the CGM Data
 
-Keep these columns:
+For each participant, read the Dexcom JSON file and keep these variables:
 
-- participant ID;
-- timestamp, date, and time of day;
-- glucose value and unit.
+- participant ID (`person_id` in AI-READI v3);
+- event type;
+- UTC timestamp;
+- local timezone abbreviation;
+- original glucose value, numeric glucose value, and glucose unit.
 
-Then:
+Complete these steps in order:
 
-1. Check for missing timestamps and glucose values.
-2. Check for duplicate readings and unusual glucose values.
-3. Mark a day as valid when it has at least 202 of 288 expected readings (70% of a complete 5-minute CGM day).
-4. Create a clean reading-level CGM table.
+1. Keep only estimated glucose value events (`event_type == "EGV"`).
+2. Parse timestamps ending in `Z` as UTC and save them as `time_utc`.
+3. Infer the participant/device regional timezone from the JSON timezone label and check that it is consistent with the clinical site.
+   - Map `pst` or `pdt` to `America/Los_Angeles`.
+   - Map `mst` or `mdt` to `America/Denver`.
+   - Map `cst` or `cdt` to `America/Chicago`.
+   - Map `est` or `edt` to `America/New_York`.
+   - These IANA names specify regional timezone rules.
+   - As a check, UW and UCSD are in the US Pacific region, and UAB is in the US Central region.
+   - If the JSON label and clinical site disagree, flag the participant for review instead of silently choosing a timezone.
+4. Convert `time_utc` to `time_local` with the selected IANA timezone. Create `date_local`, `hour_local`, `timezone_abbreviation`, and `is_dst`. Let R apply daylight-saving-time rules automatically.
+5. Document the timezone decision in a code comment. For example:
+
+```r
+# The JSON header says "pst" and the clinical site is UW.
+# We interpret this as US Pacific Time and use
+# "America/Los_Angeles" for its timezone and daylight-saving rules.
+# R determines whether each timestamp is PST or PDT.
+```
+
+6. Check for missing timestamps and glucose values.
+7. Define a duplicate as the same participant ID and UTC timestamp.
+   - If duplicate rows have the same glucose value, keep one copy.
+   - If duplicate rows have different glucose values, flag them for review and exclude them from the summary calculations.
+8. Confirm that glucose is numeric and recorded in `mg/dL`. Flag any other unit.
+9. For this exercise, flag glucose values below 40 or above 400 mg/dL as unusual and exclude them from summary calculations. Report how many were excluded. This is a data-processing rule, not a clinical definition of possible glucose.
+10. Create a clean reading-level CGM table in which each row is one unique, usable glucose reading. Keep the raw data unchanged and save the cleaned data as a new object.
+11. Count cleaned readings within each local calendar day. Mark a participant-day as valid when it has at least 202 of the expected 288 five-minute readings.
+12. If a participant's recording crosses a daylight-saving-time transition, flag that date in the QC notes. Do not calculate a different valid-day threshold for this assignment.
 
 ### Step 4: Create Summary Tables
 
+Use only cleaned readings from valid local days for the following summaries.
+
 Create one row per participant with:
 
-- number of readings and valid days;
+- number of cleaned readings;
+- number of valid days;
 - mean, median, and standard deviation (SD) of glucose;
 - coefficient of variation (CV = SD / mean × 100%);
-- percent of time at 70--180, >180, >250, <70, and <54 mg/dL.
+- percent of readings from 70 through 180 mg/dL, including 70 and 180;
+- percent of readings above 180 and above 250 mg/dL;
+- percent of readings below 70 and below 54 mg/dL.
+
+Calculate each percentage as:
+
+```text
+number of cleaned readings meeting the condition
+------------------------------------------------- × 100
+total number of cleaned readings from valid days
+```
+
+Because CGM readings occur approximately every five minutes, the percentage of readings is used as an estimate of percentage of time. The ranges overlap intentionally. Readings above 250 mg/dL are also counted above 180 mg/dL, and readings below 54 mg/dL are also counted below 70 mg/dL. 
 
 Create one row per valid participant-day with:
 
-- number of readings;
+- participant ID (`person_id`);
+- local date;
+- number of cleaned readings;
+- percent of expected readings received (`number of cleaned readings / 288 × 100`);
 - mean glucose and SD;
-- percent of time at 70--180, >180, and <70 mg/dL;
-- daytime and nighttime summaries, only if the timestamps are reliable.
+- percent of readings from 70 through 180 mg/dL;
+- percent of readings above 180 mg/dL;
+- percent of readings below 70 mg/dL;
+- number of daytime and nighttime readings;
+- mean daytime and nighttime glucose;
+- daytime and nighttime glucose SD.
+
+For this exercise, define:
+
+- Daytime: 6:00 AM through 11:59 PM local time.
+- Nighttime: 12:00 AM through 5:59 AM local time.
+
+Calculate the daytime and nighttime summaries from all cleaned readings in each period and report the number of readings in each period. These are clock-time periods, not measured sleep and waking periods. After Garmin data become available, use each participant's observed bedtime and wake time for sleep-specific analyses.
 
 ### Step 5: Make Tables and Figures
 
-- **Table 1:** CGM quality-control summary by participant
+- **Table 1:** CGM quality-control summary by participant, including raw EGV readings, missing timestamps, missing glucose values, duplicate timestamps, unusual values, cleaned readings, and valid days
 - **Table 2:** participant-level CGM features
-- **Figure 1:** full CGM trace for one participant
-- **Figure 2:** one-day traces for two or three participants
-- **Figure 3:** AGP-style plot for one participant or a small group
-- **Optional Figure 4:** people with similar HbA1c but different CGM patterns
+- **Table 3:** valid participant-day CGM features
+- **Figure 1:** full CGM trace for one participant; state the participant ID and why that participant was selected
+- **Figure 2:** one valid local-day trace for each of two or three participants; state how the participants and dates were selected
+- **Figure 3:** AGP-style plot for one participant using all of that participant's valid local days; show the median line, the 25th-to-75th-percentile ribbon, and reference lines at 70 and 180 mg/dL
+- **Optional Figure 4:** two participants whose HbA1c values differ by no more than 0.2 percentage points but whose CGM patterns appear different; omit this figure if suitable HbA1c data are unavailable
 
-For each figure, write 2--3 sentences: What does it show? What does it **not** prove?
+For each table and figure, write 2--3 sentences answering: What does it show? What does it not prove?
 
 ### Step 6: Prepare for Week 3
 
 End the notebook with short answers to these questions:
 
-- Which timestamp should be matched to sleep/activity data?
-- What CGM dates are usable, and where are the gaps?
-- Is the participant-day table ready to join with sleep/activity data?
+- Which participants have at least one valid local day?
+- Which local dates are valid for each participant, and where are the gaps?
+- Which timestamp will be used to align CGM with sleep/activity intervals? 
+- Does the participant-day table have exactly one row for each `person_id + date_local` combination?
+- Is the participant-day table ready to join with sleep/activity data? Explain any remaining problems.
 
 ### Week 3 Presentation
 
@@ -652,7 +713,7 @@ Prepare a ~20-minute update with:
 2. one CGM plot;
 3. one feature table or summary;
 4. one problem you encountered and how you handled it;
-5. one result that will help with the Week 3 sleep analysis.
+5. one question you are curious about.
 
 # Week 3 (7/21/26): Sleep and Activity Data Processing
 
