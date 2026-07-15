@@ -575,7 +575,7 @@ Then write and run the code together:
 
 Use the Week 1 cohort to create clean CGM data, summary tables, and plots. These results will be used for the sleep and activity analysis in Week 3.
 
-## Tasks (due by the Week 3 meeting)
+## TODOs (due by the Week 3 meeting)
 
 Complete the steps below in order.
 
