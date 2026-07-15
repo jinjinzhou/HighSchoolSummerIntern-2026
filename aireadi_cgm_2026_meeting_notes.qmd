@@ -15,7 +15,7 @@ format:
 engine: knitr
 ---
 
-# Week 0: Meeting Zero Before Internship Start
+# Week 0 (6/9/26): Meeting Zero Before Internship Start
 
 HS participants: TBD.
 
@@ -355,7 +355,7 @@ Before week 1, make sure you have:
 - [ ] Submitted your repository link and rendered report
 
 
-# Week 1: Cohort Assembly and Data Availability
+# Week 1 (6/30/26): Cohort Assembly and Data Availability
 
 ## Attendee
 
@@ -545,9 +545,6 @@ Each student has 15-20 minutes:
 - Show one R skill you learned and where you used it in your code.
 - Interpret one table or figure, then share one challenge or next step.
 
-
-### Break (5 minutes)
-
 ### R for Data Science: Core Skills 
 
 We will explain the R core skill sets and how each week's meeting map to them
@@ -562,10 +559,10 @@ Before each code block, ask students:
 
 Then write and run the code together:
 
-- introduce the CGM workflow and expected outputs (3 minutes);
-- read and inspect one Dexcom G6 JSON file (5 minutes);
-- clean timestamps, glucose values, and units (5 minutes);
-- check data quality and identify valid days (5 minutes);
+- introduce the CGM workflow and expected outputs;
+- read and inspect one Dexcom G6 JSON file;
+- clean timestamps, glucose values, and units;
+- check data quality and identify valid days;
 - create summary measures (4 minutes);
 - make a glucose trace or [ambulatory glucose profile (AGP)](https://www.novomedlink.com/diabetes/hcp-education/clinical/time-in-range/clinical-use/understand-ambulatory-glucose-profile.html) (3 minutes).
 
@@ -643,10 +640,9 @@ For each figure, write 2--3 sentences: What does it show? What does it **not** p
 
 End the notebook with short answers to these questions:
 
-- Who has both usable CGM and wearable data?
-- Which timestamp should be matched to sleep data?
+- Which timestamp should be matched to sleep/activity data?
 - What CGM dates are usable, and where are the gaps?
-- Is the participant-day table ready to join with sleep data?
+- Is the participant-day table ready to join with sleep/activity data?
 
 ### Week 3 Presentation
 
@@ -658,7 +654,7 @@ Prepare a ~20-minute update with:
 4. one problem you encountered and how you handled it;
 5. one result that will help with the Week 3 sleep analysis.
 
-# Week 3: Sleep and Activity Data Processing
+# Week 3 (7/21/26): Sleep and Activity Data Processing
 
 ## Agenda
 
@@ -719,7 +715,7 @@ For one participant:
   - a daily steps plot;
   - a plot showing CGM during sleep for selected participants.
 
-# Week 4: Sleep and Next-Day Glucose Patterns
+# Week 4 (7/28/26): Sleep and Next-Day Glucose Patterns
 
 ## Agenda
 
@@ -776,7 +772,7 @@ For participants with both sleep and CGM:
   - CGM and Garmin are consumer/wearable measurements;
   - AI-READI is cross-sectional.
 
-# Week 5: Clinical Phenotypes and Multimodal Features
+# Week 5 (8/4/26): Clinical Phenotypes and Multimodal Features
 
 ## Agenda
 
@@ -845,7 +841,7 @@ Then link it to:
   - figure showing whether sleep-conditioned CGM features separate phenotype groups;
   - example profiles for selected participants.
 
-# Week 6: Final Figures, Scientific Story, and Presentation
+# Week 6 (8/11/26): Final Figures, Scientific Story, and Presentation
 
 ## Agenda
 
@@ -894,7 +890,7 @@ Recommended final figures:
 7. Clinical phenotype markers and CGM features.
 8. Final conceptual figure: what CGM reveals about individuals and diabetes types.
 
-# Week 7: Buffer, Final Presentation, and Polish
+# Week 7 (8/18/26): Buffer, Final Presentation, and Polish
 
 ## Agenda
 
